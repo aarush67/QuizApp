@@ -7,97 +7,91 @@ var firebaseConfig = {
     appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
   };
 
-firebase.initializeApp(firebaseConfig);
-var db = firebase.firestore();
-var auth = firebase.auth();
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-// Google Sign-Up/Sign-In
-document.getElementById('googleSignUpBtn').addEventListener('click', function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(function(result) {
+// Sign Up with Google
+document.getElementById("googleSignUpBtn").onclick = function() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then((result) => {
         console.log("User signed up with Google:", result.user);
-        enableQuizCreation();
-    }).catch(function(error) {
-        console.log("Error:", error);
+        // Hide buttons after sign in
+        document.getElementById("createQuizNav").style.display = "block";
+        document.getElementById("signOutBtn").style.display = "block";
+        fetchQuizzes();
+    }).catch((error) => {
+        console.error("Error during Google sign-up:", error);
     });
-});
+};
 
-// Separate Google Sign-In
-document.getElementById('googleSignInBtn').addEventListener('click', function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(function(result) {
+// Sign In with Google
+document.getElementById("googleSignInBtn").onclick = function() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then((result) => {
         console.log("User signed in with Google:", result.user);
-        enableQuizCreation();
-    }).catch(function(error) {
-        console.log("Error:", error);
+        document.getElementById("createQuizNav").style.display = "block";
+        document.getElementById("signOutBtn").style.display = "block";
+        fetchQuizzes();
+    }).catch((error) => {
+        console.error("Error during Google sign-in:", error);
     });
-});
+};
 
-// Email Sign-Up
-document.getElementById('emailSignUpBtn').addEventListener('click', function() {
-    var email = prompt("Enter your email:");
-    var password = prompt("Enter your password:");
-    
-    auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
-        console.log("User signed up:", userCredential.user);
-        enableQuizCreation();
-    }).catch(function(error) {
-        console.log("Error:", error);
+// Sign Up with Email
+document.getElementById("emailSignUpBtn").onclick = function() {
+    const email = prompt("Enter your email:");
+    const password = prompt("Enter your password:");
+    auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+        console.log("User signed up with email:", userCredential.user);
+        document.getElementById("createQuizNav").style.display = "block";
+        document.getElementById("signOutBtn").style.display = "block";
+        fetchQuizzes();
+    }).catch((error) => {
+        console.error("Error during email sign-up:", error);
     });
-});
+};
 
-// Email Sign-In
-document.getElementById('emailSignInBtn').addEventListener('click', function() {
-    var email = prompt("Enter your email:");
-    var password = prompt("Enter your password:");
-    
-    auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
-        console.log("User signed in:", userCredential.user);
-        enableQuizCreation();
-    }).catch(function(error) {
-        console.log("Error:", error);
+// Sign In with Email
+document.getElementById("emailSignInBtn").onclick = function() {
+    const email = prompt("Enter your email:");
+    const password = prompt("Enter your password:");
+    auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
+        console.log("User signed in with email:", userCredential.user);
+        document.getElementById("createQuizNav").style.display = "block";
+        document.getElementById("signOutBtn").style.display = "block";
+        fetchQuizzes();
+    }).catch((error) => {
+        console.error("Error during email sign-in:", error);
     });
-});
+};
 
 // Sign Out
-document.getElementById('signOutBtn').addEventListener('click', function() {
-    auth.signOut().then(function() {
+document.getElementById("signOutBtn").onclick = function() {
+    auth.signOut().then(() => {
         console.log("User signed out");
-        document.getElementById('signOutBtn').style.display = 'none';
-        document.getElementById('createQuizNav').style.display = 'none';
+        document.getElementById("createQuizNav").style.display = "none";
+        document.getElementById("signOutBtn").style.display = "none";
+        fetchQuizzes(); // Refresh quizzes
+    }).catch((error) => {
+        console.error("Error signing out:", error);
     });
-});
+};
 
-// Enable Quiz Creation
-function enableQuizCreation() {
-    document.getElementById('signOutBtn').style.display = 'block';
-    document.getElementById('createQuizNav').style.display = 'block';
-}
-
-// Create Quiz Logic
-document.getElementById('quizForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const quizTitle = document.getElementById('quizTitle').value;
-    const questions = document.querySelectorAll('.question');
-
-    const quizData = {
-        title: quizTitle,
-        questions: []
-    };
-
-    questions.forEach(function(question) {
-        const questionText = question.querySelector('.questionText').value;
-        const options = question.querySelectorAll('.optionText');
-        const correctAnswer = question.querySelector('.correctAnswer').value;
-
-        const questionData = {
-            question: questionText,
-            options: [],
-            correctAnswer: parseInt(correctAnswer)
-        };
-
-        options.forEach(function(option) {
-            questionData.options.push(option.value);
+// Fetch Quizzes to Display on Home Page
+function fetchQuizzes() {
+    db.collection("quizzes").get().then((querySnapshot) => {
+        const quizList = document.getElementById('quizList');
+        quizList.innerHTML = ''; // Clear previous quiz list
+        querySnapshot.forEach((doc) => {
+            const quizData = doc.data();
+            const quizItem = document.createElement('div');
+            quizItem.textContent = quizData.title;
+            quizItem.className = 'quiz-item'; // Add class for styling
+            quizList.appendChild(quizItem);
         });
-
-        quiz
+    }).catch(function(error) {
+        console.error("Error fetching quizzes:", error);
+    });
+}
