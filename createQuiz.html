@@ -4,23 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Quiz</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav>
-        <h1>Quiz App</h1>
-        <ul class="navbar">
-            <li><button onclick="location.href='index.html';">Home</button></li>
-            <li><button onclick="location.href='joinQuiz.html';">Join Quiz</button></li>
-            <li><button id="signOutBtn">Sign Out</button></li>
+        <h1>Create a New Quiz</h1>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="joinQuiz.html">Join Quiz</a></li>
         </ul>
     </nav>
+
     <div id="createQuizContainer">
-        <h2>Create a New Quiz</h2>
-        <input type="text" id="quizTitle" placeholder="Quiz Title" required>
-        <button id="saveQuizBtn">Save Quiz</button>
-        <div id="feedback"></div>
+        <form id="quizForm">
+            <input type="text" id="quizTitle" placeholder="Quiz Title" required><br>
+            <div id="questionsContainer">
+                <div class="question">
+                    <input type="text" class="questionText" placeholder="Question" required><br>
+                    <input type="text" class="optionText" placeholder="Option 1" required><br>
+                    <input type="text" class="optionText" placeholder="Option 2" required><br>
+                    <input type="text" class="optionText" placeholder="Option 3" required><br>
+                    <input type="text" class="optionText" placeholder="Option 4" required><br>
+                    <input type="number" class="correctAnswer" placeholder="Correct Option Number (1-4)" min="1" max="4" required><br>
+                </div>
+            </div>
+            <button type="button" id="addQuestionBtn">Add Another Question</button><br>
+            <button type="submit">Create Quiz</button>
+        </form>
     </div>
-    <script src="createQuiz.js"></script>
+
+    <script src="app.js"></script>
 </body>
 </html>
