@@ -13,6 +13,78 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var auth = firebase.auth();
 
+// Google Sign-Up/Sign-In
+document.getElementById('googleSignInBtn').addEventListener('click', function() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(function(result) {
+        console.log("User signed in:", result.user);
+        document.getElementById('signOutBtn').style.display = 'block';
+        loadQuizzes();
+    }).catch(function(error) {
+        console.error("Error:", error);
+    });
+});
+
+// Email Sign-Up
+document.getElementById('emailSignUpBtn').addEventListener('click', function() {
+    var email = prompt("Enter your email:");
+    var password = prompt("Enter your password:");
+
+    auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
+        console.log("User signed up:", userCredential.user);
+        loadQuizzes();
+    }).catch(function(error) {
+        console.error("Error:", error);
+    });
+});
+
+// Email Sign-In
+document.getElementById('emailSignInBtn').addEventListener('click', function() {
+    var email = prompt("Enter your email:");
+    var password = prompt("Enter your password:");
+
+    auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
+        console.log("User signed in:", userCredential.user);
+        document.getElementById('signOutBtn').style.display = 'block';
+        loadQuizzes();
+    }).catch(function(error) {
+        console.error("Error:", error);
+    });
+});
+
+// Sign Out
+document.getElementById('signOutBtn').addEventListener('click', function() {
+    auth.signOut().then(function() {
+        console.log("User signed out");
+        document.getElementById('signOutBtn').style.display = 'none';
+        document.getElementById('quizList').innerHTML = '';
+    });
+});
+
+// Load quizzes
+function loadQuizzes() {
+    db.collection('quizzes').get().then(function(querySnapshot) {
+        document.getElementById('quizList').innerHTML = '';
+        querySnapshot.forEach(function(doc) {
+            const quiz = doc.data();
+            const quizItem = `<div class="quiz-item" data-id="${doc.id}">
+                                  <h3>${quiz.title}</h3>
+                                  <button class="playQuizBtn">Play Quiz</button>
+                              </div>`;
+            document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
+        });
+
+        document.querySelectorAll('.playQuizBtn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const quizId = this.parentElement.getAttribute('data-id');
+                window.location.href = `playQuiz.html?id=${quizId}`; // Navigate to playQuiz.html with quiz ID
+            });
+        });
+    }).catch(function(error) {
+        console.error("Error loading quizzes:", error);
+    });
+}
+
 // Load quiz when the page is loaded
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -20,8 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (quizId) {
         loadQuiz(quizId);
-    } else {
-        document.getElementById('playOptionsContainer').innerHTML = '<p>No quiz selected!</p>';
     }
 });
 
@@ -36,7 +106,6 @@ function loadQuiz(quizId) {
         }
     }).catch(function(error) {
         console.error("Error fetching quiz data:", error);
-        document.getElementById('playOptionsContainer').innerHTML = '<p>Error loading quiz data.</p>';
     });
 }
 
