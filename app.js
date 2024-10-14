@@ -100,48 +100,4 @@ document.getElementById('quizForm').addEventListener('submit', function(e) {
             questionData.options.push(option.value);
         });
 
-        quizData.questions.push(questionData);
-    });
-
-    db.collection('quizzes').add(quizData).then(function(docRef) {
-        console.log("Quiz created with ID:", docRef.id);
-        alert("Quiz created successfully!");
-        document.getElementById('quizForm').reset(); // Reset the form after submission
-    }).catch(function(error) {
-        console.error("Error adding quiz:", error);
-    });
-});
-
-// Join Quiz Logic
-document.getElementById('joinQuizBtn').addEventListener('click', function() {
-    const quizCode = document.getElementById('quizCode').value;
-
-    // Code to retrieve and validate quiz code
-    db.collection('quizzes').doc(quizCode).get().then(function(doc) {
-        if (doc.exists) {
-            console.log("Joining quiz:", doc.data());
-            // Add logic to start the quiz or navigate to the quiz page
-            alert("Joining quiz: " + doc.data().title);
-            // Here, you could redirect the user to a quiz-playing page.
-        } else {
-            console.log("No such quiz!");
-            alert("Quiz not found. Please check the code.");
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
-});
-
-// Fetch Quizzes to Display on Home Page
-function fetchQuizzes() {
-    db.collection("quizzes").get().then((querySnapshot) => {
-        const quizList = document.getElementById('quizList');
-        quizList.innerHTML = ''; // Clear previous quiz list
-        querySnapshot.forEach((doc) => {
-            const quizItem = document.createElement('div');
-            quizItem.textContent = doc.data().title;
-            quizList.appendChild(quizItem);
-        });
-    });
-}
-fetchQuizzes();
+        quiz
