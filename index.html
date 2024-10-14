@@ -11,15 +11,23 @@
     <script src="app.js" defer></script>
 </head>
 <body>
-    <nav>
-        <button id="googleSignInBtn">Sign in with Google</button>
-        <button id="emailSignInBtn">Sign In with Email</button>
-        <button id="emailSignUpBtn">Sign Up with Email</button>
-        <button id="signOutBtn" style="display: none;">Sign Out</button>
-        <button id="createQuizBtn">Create Quiz</button>
-        <button id="joinQuizBtn">Join Quiz</button>
+   <nav>
+        <h1>Welcome to the Quiz App</h1>
+        <ul>
+            <li><a href="createQuiz.html" class="button">Create Quiz</a></li>
+            <li><a href="joinQuiz.html" class="button">Join Quiz</a></li>
+            <li><button id="googleSignInBtn">Sign in with Google</button></li>
+            <li><button id="emailSignInBtn">Sign In with Email</button></li>
+            <li><button id="emailSignUpBtn">Sign Up with Email</button></li>
+            <li><button id="signOutBtn" style="display: none;">Sign Out</button></li>
+        </ul>
     </nav>
-    
-    <div id="quizList"></div>
+
+    <div id="quizListContainer">
+        <h2>Available Quizzes</h2>
+        <div id="quizList"></div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
