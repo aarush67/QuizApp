@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizApp</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to QuizApp</h1>
+    <p>Create, share, and take quizzes!</p>
+    
+    <!-- Sign Up / Log In -->
+    <div id="auth-section">
+      <button id="googleSignInBtn">Sign in with Google</button>
+      <br/>
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <button id="signUpBtn">Sign Up</button>
+      <button id="loginBtn">Login</button>
+      <button id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+
+    <!-- Create a Quiz (Visible after login) -->
+    <div id="create-quiz-section" style="display:none;">
+      <h2>Create a Quiz</h2>
+      <input type="text" id="quizTitle" placeholder="Quiz Title">
+      <input type="text" id="quizQuestion" placeholder="Question">
+      <input type="text" id="quizAnswer1" placeholder="Answer 1">
+      <input type="text" id="quizAnswer2" placeholder="Answer 2">
+      <button id="saveQuizBtn">Save Quiz</button>
+    </div>
+    
+    <!-- Take a Quiz -->
+    <div id="take-quiz-section">
+      <h2>Take a Quiz</h2>
+      <input type="text" id="quizCode" placeholder="Enter Quiz Code">
+      <button id="startQuizBtn">Start Quiz</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
