@@ -5,27 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz App</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
 </head>
 <body>
     <nav>
         <h1>Quiz App</h1>
-        <ul class="navbar">
-            <li><button id="googleSignUpBtn">Sign Up with Google</button></li>
-            <li><button id="googleSignInBtn">Sign In with Google</button></li>
-            <li><button id="emailSignUpBtn">Sign Up with Email</button></li>
-            <li><button id="emailSignInBtn">Sign In with Email</button></li>
-            <li><button id="createQuizNav" style="display: none;" onclick="location.href='createQuiz.html';">Create Quiz</button></li>
-            <li><button id="joinQuizNav" onclick="location.href='joinQuiz.html';">Join Quiz</button></li>
-            <li><button id="signOutBtn" style="display: none;">Sign Out</button></li>
-        </ul>
+        <!-- Sign-up/Sign-in buttons -->
+        <button id="googleSignInBtn">Sign In with Google</button>
+        <button id="emailSignInBtn">Sign In with Email</button>
+        <button id="emailSignUpBtn">Sign Up with Email</button>
+        <button id="signOutBtn" style="display:none;">Sign Out</button>
     </nav>
+    
     <div id="quizListContainer">
         <h2>Available Quizzes</h2>
         <div id="quizList"></div>
     </div>
+
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
