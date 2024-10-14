@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var auth = firebase.auth();
 
-// Google Sign-Up/Sign-In
+// Handle Google Sign-In
 document.getElementById('googleSignInBtn').addEventListener('click', function() {
     var provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider).then(function(result) {
@@ -21,11 +21,11 @@ document.getElementById('googleSignInBtn').addEventListener('click', function() 
         document.getElementById('signOutBtn').style.display = 'block';
         loadQuizzes();
     }).catch(function(error) {
-        console.error("Error:", error);
+        console.error("Error during Google Sign-In:", error);
     });
 });
 
-// Email Sign-Up
+// Handle Email Sign-Up
 document.getElementById('emailSignUpBtn').addEventListener('click', function() {
     var email = prompt("Enter your email:");
     var password = prompt("Enter your password:");
@@ -34,11 +34,11 @@ document.getElementById('emailSignUpBtn').addEventListener('click', function() {
         console.log("User signed up:", userCredential.user);
         loadQuizzes();
     }).catch(function(error) {
-        console.error("Error:", error);
+        console.error("Error during sign-up:", error);
     });
 });
 
-// Email Sign-In
+// Handle Email Sign-In
 document.getElementById('emailSignInBtn').addEventListener('click', function() {
     var email = prompt("Enter your email:");
     var password = prompt("Enter your password:");
@@ -48,23 +48,23 @@ document.getElementById('emailSignInBtn').addEventListener('click', function() {
         document.getElementById('signOutBtn').style.display = 'block';
         loadQuizzes();
     }).catch(function(error) {
-        console.error("Error:", error);
+        console.error("Error during sign-in:", error);
     });
 });
 
-// Sign Out
+// Handle Sign Out
 document.getElementById('signOutBtn').addEventListener('click', function() {
     auth.signOut().then(function() {
         console.log("User signed out");
         document.getElementById('signOutBtn').style.display = 'none';
-        document.getElementById('quizList').innerHTML = '';
+        document.getElementById('quizList').innerHTML = ''; // Clear quiz list
     });
 });
 
-// Load quizzes
+// Load quizzes from Firestore
 function loadQuizzes() {
     db.collection('quizzes').get().then(function(querySnapshot) {
-        document.getElementById('quizList').innerHTML = '';
+        document.getElementById('quizList').innerHTML = ''; // Clear existing quizzes
         querySnapshot.forEach(function(doc) {
             const quiz = doc.data();
             const quizItem = `<div class="quiz-item" data-id="${doc.id}">
@@ -74,10 +74,11 @@ function loadQuizzes() {
             document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
         });
 
+        // Add event listeners to play buttons
         document.querySelectorAll('.playQuizBtn').forEach(function(button) {
             button.addEventListener('click', function() {
                 const quizId = this.parentElement.getAttribute('data-id');
-                window.location.href = `playQuiz.html?id=${quizId}`; // Navigate to playQuiz.html with quiz ID
+                window.location.href = `playQuiz.html?id=${quizId}`; // Redirect to playQuiz page
             });
         });
     }).catch(function(error) {
@@ -92,6 +93,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (quizId) {
         loadQuiz(quizId);
+    } else {
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                document.getElementById('signOutBtn').style.display = 'block';
+                loadQuizzes();
+            }
+        });
     }
 });
 
