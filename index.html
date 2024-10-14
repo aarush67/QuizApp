@@ -9,13 +9,18 @@
 <body>
     <nav>
         <h1>Quiz App</h1>
-        <!-- Sign-up/Sign-in buttons -->
-        <button id="googleSignInBtn">Sign In with Google</button>
-        <button id="emailSignInBtn">Sign In with Email</button>
-        <button id="emailSignUpBtn">Sign Up with Email</button>
-        <button id="signOutBtn" style="display:none;">Sign Out</button>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="createQuiz.html" id="createQuizNav" style="display:none;">Create Quiz</a></li>
+            <li><a href="joinQuiz.html">Join Quiz</a></li>
+            <li><button id="googleSignUpBtn">Sign Up with Google</button></li>
+            <li><button id="googleSignInBtn">Sign In with Google</button></li>
+            <li><button id="emailSignUpBtn">Sign Up with Email</button></li>
+            <li><button id="emailSignInBtn">Sign In with Email</button></li>
+            <li><button id="signOutBtn" style="display:none;">Sign Out</button></li>
+        </ul>
     </nav>
-    
+
     <div id="quizListContainer">
         <h2>Available Quizzes</h2>
         <div id="quizList"></div>
