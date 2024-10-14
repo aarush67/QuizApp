@@ -96,3 +96,61 @@ function playQuiz(quizId) {
         console.error('Error getting quiz:', error);
     });
 }
+
+// Create quiz
+document.getElementById('quizForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Prevent the default form submission
+
+    const quizTitle = document.getElementById('quizTitle').value;
+    const questions = [];
+
+    const questionElements = document.querySelectorAll('.question');
+    questionElements.forEach(questionElement => {
+        const questionText = questionElement.querySelector('.questionText').value;
+        const options = [];
+        const optionElements = questionElement.querySelectorAll('.optionText');
+        
+        optionElements.forEach(option => {
+            options.push(option.value);
+        });
+
+        const correctAnswer = questionElement.querySelector('.correctAnswer').value;
+
+        questions.push({
+            question: questionText,
+            options: options,
+            correctAnswer: parseInt(correctAnswer, 10) // Convert to number
+        });
+    });
+
+    // Create the quiz object
+    const quizData = {
+        title: quizTitle,
+        questions: questions
+    };
+
+    try {
+        const docRef = await db.collection('quizzes').add(quizData);
+        console.log('Quiz created with ID:', docRef.id);
+        alert("Quiz created successfully!");
+        document.getElementById('quizForm').reset(); // Clear the form
+    } catch (error) {
+        console.error('Error adding quiz:', error);
+        alert("Error creating quiz. Please try again.");
+    }
+});
+
+// Logic to add another question dynamically
+document.getElementById('addQuestionBtn').addEventListener('click', () => {
+    const questionHTML = `
+        <div class="question">
+            <input type="text" class="questionText" placeholder="Question" required><br>
+            <input type="text" class="optionText" placeholder="Option 1" required><br>
+            <input type="text" class="optionText" placeholder="Option 2" required><br>
+            <input type="text" class="optionText" placeholder="Option 3" required><br>
+            <input type="text" class="optionText" placeholder="Option 4" required><br>
+            <input type="number" class="correctAnswer" placeholder="Correct Option Number (1-4)" min="1" max="4" required><br>
+        </div>
+    `;
+    document.getElementById('questionsContainer').insertAdjacentHTML('beforeend', questionHTML);
+});
