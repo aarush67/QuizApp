@@ -7,105 +7,89 @@ var firebaseConfig = {
     appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
   };
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+var auth = firebase.auth();
 
-// Sign Up with Google
-document.getElementById("googleSignUpBtn").onclick = function() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then((result) => {
-        console.log("User signed up with Google:", result.user);
-        // Hide buttons after sign in
-        document.getElementById("createQuizNav").style.display = "block";
-        document.getElementById("signOutBtn").style.display = "block";
-        fetchQuizzes();
-    }).catch((error) => {
-        console.error("Error during Google sign-up:", error);
+// Google Sign-Up/Sign-In
+document.getElementById('googleSignInBtn').addEventListener('click', function() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(function(result) {
+        console.log("User signed in:", result.user);
+        document.getElementById('signOutBtn').style.display = 'block';
+        loadQuizzes();
+    }).catch(function(error) {
+        console.log("Error:", error);
     });
-};
+});
 
-// Sign In with Google
-document.getElementById("googleSignInBtn").onclick = function() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then((result) => {
-        console.log("User signed in with Google:", result.user);
-        document.getElementById("createQuizNav").style.display = "block";
-        document.getElementById("signOutBtn").style.display = "block";
-        fetchQuizzes();
-    }).catch((error) => {
-        console.error("Error during Google sign-in:", error);
+// Email Sign-Up
+document.getElementById('emailSignUpBtn').addEventListener('click', function() {
+    var email = prompt("Enter your email:");
+    var password = prompt("Enter your password:");
+    
+    auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
+        console.log("User signed up:", userCredential.user);
+        loadQuizzes();
+    }).catch(function(error) {
+        console.log("Error:", error);
     });
-};
+});
 
-// Sign Up with Email
-document.getElementById("emailSignUpBtn").onclick = function() {
-    const email = prompt("Enter your email:");
-    const password = prompt("Enter your password:");
-    auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-        console.log("User signed up with email:", userCredential.user);
-        document.getElementById("createQuizNav").style.display = "block";
-        document.getElementById("signOutBtn").style.display = "block";
-        fetchQuizzes();
-    }).catch((error) => {
-        console.error("Error during email sign-up:", error);
+// Email Sign-In
+document.getElementById('emailSignInBtn').addEventListener('click', function() {
+    var email = prompt("Enter your email:");
+    var password = prompt("Enter your password:");
+    
+    auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
+        console.log("User signed in:", userCredential.user);
+        document.getElementById('signOutBtn').style.display = 'block';
+        loadQuizzes();
+    }).catch(function(error) {
+        console.log("Error:", error);
     });
-};
-
-// Sign In with Email
-document.getElementById("emailSignInBtn").onclick = function() {
-    const email = prompt("Enter your email:");
-    const password = prompt("Enter your password:");
-    auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
-        console.log("User signed in with email:", userCredential.user);
-        document.getElementById("createQuizNav").style.display = "block";
-        document.getElementById("signOutBtn").style.display = "block";
-        fetchQuizzes();
-    }).catch((error) => {
-        console.error("Error during email sign-in:", error);
-    });
-};
+});
 
 // Sign Out
-document.getElementById("signOutBtn").onclick = function() {
-    auth.signOut().then(() => {
+document.getElementById('signOutBtn').addEventListener('click', function() {
+    auth.signOut().then(function() {
         console.log("User signed out");
-        document.getElementById("createQuizNav").style.display = "none";
-        document.getElementById("signOutBtn").style.display = "none";
-        fetchQuizzes(); // Refresh quizzes
-    }).catch((error) => {
-        console.error("Error signing out:", error);
+        document.getElementById('signOutBtn').style.display = 'none';
+        document.getElementById('quizList').innerHTML = '';
     });
-};
+});
 
-// Fetch Quizzes to Display on Home Page
-function fetchQuizzes() {
-    db.collection("quizzes").get().then((querySnapshot) => {
-        const quizList = document.getElementById('quizList');
-        quizList.innerHTML = ''; // Clear previous quiz list
-        querySnapshot.forEach((doc) => {
-            const quizData = doc.data();
-            const quizItem = document.createElement('div');
-            quizItem.textContent = quizData.title;
-            quizItem.className = 'quiz-item'; // Add class for styling
-            quizList.appendChild(quizItem);
+// Load quizzes
+function loadQuizzes() {
+    db.collection('quizzes').get().then(function(querySnapshot) {
+        document.getElementById('quizList').innerHTML = '';
+        querySnapshot.forEach(function(doc) {
+            const quiz = doc.data();
+            const quizItem = `<div class="quiz-item" data-id="${doc.id}">
+                                  <h3>${quiz.title}</h3>
+                                  <button class="playQuizBtn">Play Quiz</button>
+                              </div>`;
+            document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
         });
-    }).catch((error) => {
-        console.error("Error fetching quizzes:", error);
+
+        document.querySelectorAll('.playQuizBtn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const quizId = this.parentElement.getAttribute('data-id');
+                playQuiz(quizId);
+            });
+        });
     });
 }
 
-// Update UI on Auth State Change
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        console.log("User is signed in:", user);
-        document.getElementById("createQuizNav").style.display = "block";
-        document.getElementById("signOutBtn").style.display = "block";
-        fetchQuizzes();
-    } else {
-        console.log("No user is signed in");
-        document.getElementById("createQuizNav").style.display = "none";
-        document.getElementById("signOutBtn").style.display = "none";
-    }
-});
+// Play quiz
+function playQuiz(quizId) {
+    db.collection('quizzes').doc(quizId).get().then(function(doc) {
+        if (doc.exists) {
+            const quiz = doc.data();
+            alert('Start playing: ' + quiz.title);
+            // Logic to display questions and allow users to answer
+        }
+    }).catch(function(error) {
+        console.error('Error getting quiz:', error);
+    });
+}
