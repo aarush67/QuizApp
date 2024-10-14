@@ -6,7 +6,7 @@ body {
 }
 
 nav {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Green color for the navbar */
     color: white;
     padding: 15px;
 }
@@ -29,7 +29,7 @@ nav h1 {
 }
 
 .navbar button {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Green button color */
     color: white;
     border: none;
     padding: 10px 15px;
