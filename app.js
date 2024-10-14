@@ -7,26 +7,27 @@ var firebaseConfig = {
     appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
   };
   
-  firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var auth = firebase.auth();
 
-// Log in user
+// Google Sign-Up/Sign-In
 document.getElementById('googleSignInBtn').addEventListener('click', function() {
     var provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider).then(function(result) {
         console.log("User signed in:", result.user);
+        showCreateQuizPage();
         document.getElementById('signOutBtn').style.display = 'block';
     }).catch(function(error) {
         console.log("Error:", error);
     });
 });
 
-// Sign out user
 document.getElementById('signOutBtn').addEventListener('click', function() {
     auth.signOut().then(function() {
         console.log("User signed out");
         document.getElementById('signOutBtn').style.display = 'none';
+        document.getElementById('createQuizPage').style.display = 'none';
     });
 });
 
