@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz App</title>
+    <title>Quiz App - Home</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -13,39 +13,13 @@
 <body>
     <nav>
         <button id="googleSignInBtn">Sign in with Google</button>
-        <button id="emailSignUpBtn">Sign Up with Email</button>
         <button id="emailSignInBtn">Sign In with Email</button>
+        <button id="emailSignUpBtn">Sign Up with Email</button>
         <button id="signOutBtn" style="display: none;">Sign Out</button>
         <button id="createQuizBtn">Create Quiz</button>
         <button id="joinQuizBtn">Join Quiz</button>
     </nav>
-
+    
     <div id="quizList"></div>
-
-    <div id="quizFormContainer" style="display: none;">
-        <form id="quizForm">
-            <input type="text" id="quizTitle" placeholder="Quiz Title" required>
-            <div id="questionsContainer">
-                <div class="question">
-                    <input type="text" class="questionText" placeholder="Question" required><br>
-                    <input type="text" class="optionText" placeholder="Option 1" required><br>
-                    <input type="text" class="optionText" placeholder="Option 2" required><br>
-                    <input type="text" class="optionText" placeholder="Option 3" required><br>
-                    <input type="text" class="optionText" placeholder="Option 4" required><br>
-                    <input type="number" class="correctAnswer" placeholder="Correct Option Number (1-4)" min="1" max="4" required><br>
-                </div>
-            </div>
-            <button type="button" id="addQuestionBtn">Add Question</button>
-            <button type="submit">Create Quiz</button>
-        </form>
-    </div>
-
-    <script>
-        // Show or hide the quiz form when "Create Quiz" is clicked
-        document.getElementById('createQuizBtn').addEventListener('click', () => {
-            const quizFormContainer = document.getElementById('quizFormContainer');
-            quizFormContainer.style.display = quizFormContainer.style.display === 'none' ? 'block' : 'none';
-        });
-    </script>
 </body>
 </html>
