@@ -23,6 +23,33 @@ document.getElementById('googleSignInBtn').addEventListener('click', function() 
     });
 });
 
+// Email Sign-Up
+document.getElementById('emailSignUpBtn').addEventListener('click', function() {
+    var email = prompt("Enter your email:");
+    var password = prompt("Enter your password:");
+    
+    auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
+        console.log("User signed up:", userCredential.user);
+        loadQuizzes();
+    }).catch(function(error) {
+        console.log("Error:", error);
+    });
+});
+
+// Email Sign-In
+document.getElementById('emailSignInBtn').addEventListener('click', function() {
+    var email = prompt("Enter your email:");
+    var password = prompt("Enter your password:");
+    
+    auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
+        console.log("User signed in:", userCredential.user);
+        document.getElementById('signOutBtn').style.display = 'block';
+        loadQuizzes();
+    }).catch(function(error) {
+        console.log("Error:", error);
+    });
+});
+
 // Sign Out
 document.getElementById('signOutBtn').addEventListener('click', function() {
     auth.signOut().then(function() {
@@ -32,36 +59,10 @@ document.getElementById('signOutBtn').addEventListener('click', function() {
     });
 });
 
-// Save quiz to Firestore
-document.getElementById('quizForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const quizTitle = document.getElementById('quizTitle').value;
-    const questions = [];
-    
-    document.querySelectorAll('.question').forEach(function(questionElement) {
-        const questionText = questionElement.querySelector('.questionText').value;
-        const answerOptions = [];
-        questionElement.querySelectorAll('.answerOption').forEach(function(optionElement) {
-            answerOptions.push(optionElement.value);
-        });
-        const correctAnswer = parseInt(questionElement.querySelector('.correctAnswer').value);
-
-        questions.push({ questionText, answerOptions, correctAnswer });
-    });
-
-    db.collection('quizzes').add({
-        title: quizTitle,
-        questions: questions
-    }).then(function() {
-        alert('Quiz created successfully!');
-    }).catch(function(error) {
-        console.error('Error creating quiz:', error);
-    });
-});
-
-// Load quizzes for playing
+// Load quizzes
 function loadQuizzes() {
     db.collection('quizzes').get().then(function(querySnapshot) {
+        document.getElementById('quizList').innerHTML = '';
         querySnapshot.forEach(function(doc) {
             const quiz = doc.data();
             const quizItem = `<div class="quiz-item" data-id="${doc.id}">
