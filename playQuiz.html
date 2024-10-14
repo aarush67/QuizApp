@@ -8,22 +8,21 @@
 </head>
 <body>
     <nav>
-        <h1>Quiz App</h1>
-        <a href="index.html">Home</a>
-        <button id="signOutBtn">Sign Out</button>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="createQuiz.html">Create Quiz</a></li>
+            <li><a href="joinQuiz.html">Join Quiz</a></li>
+        </ul>
     </nav>
-
-    <div id="playOptionsContainer">
-        <h2>Select a Mode</h2>
-        <button id="playSoloBtn" class="button">Play Solo</button>
-        <button id="playMultiplayerBtn" class="button">Play Multiplayer</button>
+    <div class="container">
+        <h1 id="quizTitle"></h1>
+        <div id="playOptionsContainer"></div>
+        <div id="questionContainer"></div>
+        <button id="backBtn" class="button" style="display:none;">Back to Quizzes</button>
     </div>
-
-    <div id="questionContainer"></div>
-
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
