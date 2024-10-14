@@ -13,76 +13,75 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var auth = firebase.auth();
 
-// Handle Google Sign-In
-document.getElementById('googleSignInBtn').addEventListener('click', function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(function(result) {
-        console.log("User signed in:", result.user);
-        document.getElementById('signOutBtn').style.display = 'block';
+// Listen for auth state changes
+auth.onAuthStateChanged(user => {
+    if (user) {
+        document.getElementById("welcomeMessage").innerText = `Welcome, ${user.email}!`;
         loadQuizzes();
-    }).catch(function(error) {
-        console.error("Error during Google Sign-In:", error);
-    });
-});
-
-// Handle Email Sign-Up
-document.getElementById('emailSignUpBtn').addEventListener('click', function() {
-    var email = prompt("Enter your email:");
-    var password = prompt("Enter your password:");
-
-    auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
-        console.log("User signed up:", userCredential.user);
-        loadQuizzes();
-    }).catch(function(error) {
-        console.error("Error during sign-up:", error);
-    });
-});
-
-// Handle Email Sign-In
-document.getElementById('emailSignInBtn').addEventListener('click', function() {
-    var email = prompt("Enter your email:");
-    var password = prompt("Enter your password:");
-
-    auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
-        console.log("User signed in:", userCredential.user);
-        document.getElementById('signOutBtn').style.display = 'block';
-        loadQuizzes();
-    }).catch(function(error) {
-        console.error("Error during sign-in:", error);
-    });
-});
-
-// Handle Sign Out
-document.getElementById('signOutBtn').addEventListener('click', function() {
-    auth.signOut().then(function() {
-        console.log("User signed out");
-        document.getElementById('signOutBtn').style.display = 'none';
-        document.getElementById('quizList').innerHTML = ''; // Clear quiz list
-    });
+    } else {
+        document.getElementById("loginContainer").style.display = "block";
+    }
 });
 
 // Load quizzes from Firestore
 function loadQuizzes() {
-    db.collection('quizzes').get().then(function(querySnapshot) {
-        document.getElementById('quizList').innerHTML = ''; // Clear existing quizzes
-        querySnapshot.forEach(function(doc) {
-            const quiz = doc.data();
-            const quizItem = `<div class="quiz-item" data-id="${doc.id}">
-                                  <h3>${quiz.title}</h3>
-                                  <button class="playQuizBtn">Play Quiz</button>
-                              </div>`;
-            document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
-        });
+    db.collection('quizzes').get().then(snapshot => {
+        const quizzesList = document.getElementById('quizzesList');
+        quizzesList.innerHTML = ''; // Clear previous quizzes
 
-        // Add event listeners to play buttons
-        document.querySelectorAll('.playQuizBtn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const quizId = this.parentElement.getAttribute('data-id');
-                window.location.href = `playQuiz.html?id=${quizId}`; // Redirect to playQuiz page
-            });
+        snapshot.forEach(doc => {
+            const quizData = doc.data();
+            const quizItem = document.createElement('div');
+            quizItem.className = 'quiz-item';
+            quizItem.innerHTML = `
+                <h3>${quizData.title}</h3>
+                <button class="play-button" onclick="playQuiz('${doc.id}')">Play Quiz</button>
+            `;
+            quizzesList.appendChild(quizItem);
         });
-    }).catch(function(error) {
+    }).catch(error => {
         console.error("Error loading quizzes:", error);
+    });
+}
+
+// Function to play a quiz
+function playQuiz(quizId) {
+    window.location.href = `playQuiz.html?id=${quizId}`;
+}
+
+// Login function
+function login() {
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+
+    auth.signInWithEmailAndPassword(email, password).then(() => {
+        document.getElementById('loginContainer').style.display = 'none';
+    }).catch(error => {
+        console.error("Login Error:", error);
+        alert(error.message);
+    });
+}
+
+// Logout function
+function logout() {
+    auth.signOut().then(() => {
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('welcomeMessage').innerText = '';
+    }).catch(error => {
+        console.error("Logout Error:", error);
+    });
+}
+
+// Sign-up function
+function signUp() {
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+
+    auth.createUserWithEmailAndPassword(email, password).then(() => {
+        alert('Account created successfully!');
+    }).catch(error => {
+        console.error("Signup Error:", error);
+        alert(error.message);
     });
 }
 
@@ -90,16 +89,8 @@ function loadQuizzes() {
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const quizId = urlParams.get('id');
-
     if (quizId) {
         loadQuiz(quizId);
-    } else {
-        auth.onAuthStateChanged(function(user) {
-            if (user) {
-                document.getElementById('signOutBtn').style.display = 'block';
-                loadQuizzes();
-            }
-        });
     }
 });
 
@@ -108,6 +99,7 @@ function loadQuiz(quizId) {
     db.collection('quizzes').doc(quizId).get().then(function(doc) {
         if (doc.exists) {
             const quizData = doc.data();
+            document.getElementById('quizTitle').innerText = quizData.title;
             displayQuizOptions(quizData);
         } else {
             document.getElementById('playOptionsContainer').innerHTML = '<p>Quiz not found!</p>';
@@ -121,7 +113,6 @@ function loadQuiz(quizId) {
 function displayQuizOptions(quizData) {
     const playOptionsContainer = document.getElementById('playOptionsContainer');
     playOptionsContainer.innerHTML = `
-        <h2>${quizData.title}</h2>
         <button id="playSoloBtn" class="button">Play Solo</button>
         <button id="playMultiplayerBtn" class="button">Play Multiplayer</button>
     `;
@@ -133,7 +124,7 @@ function displayQuizOptions(quizData) {
 
     // Multiplayer mode button event listener
     document.getElementById('playMultiplayerBtn').addEventListener('click', function() {
-        alert('Multiplayer mode is not yet implemented!');
+        alert('Multiplayer mode is not yet implemented!'); // Placeholder for multiplayer functionality
     });
 }
 
@@ -141,7 +132,8 @@ function displayQuizOptions(quizData) {
 function startSoloQuiz(quizData) {
     const questionContainer = document.getElementById('questionContainer');
     questionContainer.innerHTML = ''; // Clear previous content
-    displayQuestion(quizData.questions[0], 0, quizData);
+    document.getElementById('playOptionsContainer').style.display = 'none'; // Hide options
+    displayQuestion(quizData.questions[0], 0, quizData); // Show the first question
 }
 
 // Display question and options for quiz
@@ -149,20 +141,29 @@ function displayQuestion(question, index, quizData) {
     const questionContainer = document.getElementById('questionContainer');
     questionContainer.innerHTML = `<h3>${question.text}</h3>`;
     
-    question.options.forEach((option) => {
+    question.options.forEach((option, idx) => {
         const optionBtn = document.createElement('button');
         optionBtn.className = 'answer-button';
         optionBtn.innerText = option.text;
         optionBtn.onclick = () => {
-            // Logic for checking the answer goes here
-            alert('You selected: ' + option.text);
-            // Logic to go to the next question
-            if (index + 1 < quizData.questions.length) {
-                displayQuestion(quizData.questions[index + 1], index + 1, quizData);
-            } else {
-                questionContainer.innerHTML = '<h2>Quiz Complete!</h2>'; // End of quiz message
-            }
+            checkAnswer(option.isCorrect, quizData, index);
         };
         questionContainer.appendChild(optionBtn);
     });
+}
+
+// Check the selected answer
+function checkAnswer(isCorrect, quizData, index) {
+    if (isCorrect) {
+        alert('Correct answer!');
+    } else {
+        alert('Wrong answer. Try again!');
+    }
+    
+    // Logic to go to the next question
+    if (index + 1 < quizData.questions.length) {
+        displayQuestion(quizData.questions[index + 1], index + 1, quizData);
+    } else {
+        document.getElementById('questionContainer').innerHTML = '<h2>Quiz Complete!</h2>'; // End of quiz message
+    }
 }
