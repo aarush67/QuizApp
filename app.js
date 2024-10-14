@@ -12,12 +12,22 @@ var db = firebase.firestore();
 var auth = firebase.auth();
 
 // Google Sign-Up/Sign-In
+document.getElementById('googleSignUpBtn').addEventListener('click', function() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(function(result) {
+        console.log("User signed up with Google:", result.user);
+        enableQuizCreation();
+    }).catch(function(error) {
+        console.log("Error:", error);
+    });
+});
+
+// Separate Google Sign-In
 document.getElementById('googleSignInBtn').addEventListener('click', function() {
     var provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider).then(function(result) {
-        console.log("User signed in:", result.user);
-        document.getElementById('signOutBtn').style.display = 'block';
-        loadQuizzes();
+        console.log("User signed in with Google:", result.user);
+        enableQuizCreation();
     }).catch(function(error) {
         console.log("Error:", error);
     });
@@ -30,7 +40,7 @@ document.getElementById('emailSignUpBtn').addEventListener('click', function() {
     
     auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
         console.log("User signed up:", userCredential.user);
-        loadQuizzes();
+        enableQuizCreation();
     }).catch(function(error) {
         console.log("Error:", error);
     });
@@ -43,8 +53,7 @@ document.getElementById('emailSignInBtn').addEventListener('click', function() {
     
     auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
         console.log("User signed in:", userCredential.user);
-        document.getElementById('signOutBtn').style.display = 'block';
-        loadQuizzes();
+        enableQuizCreation();
     }).catch(function(error) {
         console.log("Error:", error);
     });
@@ -55,41 +64,84 @@ document.getElementById('signOutBtn').addEventListener('click', function() {
     auth.signOut().then(function() {
         console.log("User signed out");
         document.getElementById('signOutBtn').style.display = 'none';
-        document.getElementById('quizList').innerHTML = '';
+        document.getElementById('createQuizNav').style.display = 'none';
     });
 });
 
-// Load quizzes
-function loadQuizzes() {
-    db.collection('quizzes').get().then(function(querySnapshot) {
-        document.getElementById('quizList').innerHTML = '';
-        querySnapshot.forEach(function(doc) {
-            const quiz = doc.data();
-            const quizItem = `<div class="quiz-item" data-id="${doc.id}">
-                                  <h3>${quiz.title}</h3>
-                                  <button class="playQuizBtn">Play Quiz</button>
-                              </div>`;
-            document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
-        });
-
-        document.querySelectorAll('.playQuizBtn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const quizId = this.parentElement.getAttribute('data-id');
-                playQuiz(quizId);
-            });
-        });
-    });
+// Enable Quiz Creation
+function enableQuizCreation() {
+    document.getElementById('signOutBtn').style.display = 'block';
+    document.getElementById('createQuizNav').style.display = 'block';
 }
 
-// Play quiz
-function playQuiz(quizId) {
-    db.collection('quizzes').doc(quizId).get().then(function(doc) {
+// Create Quiz Logic
+document.getElementById('quizForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const quizTitle = document.getElementById('quizTitle').value;
+    const questions = document.querySelectorAll('.question');
+
+    const quizData = {
+        title: quizTitle,
+        questions: []
+    };
+
+    questions.forEach(function(question) {
+        const questionText = question.querySelector('.questionText').value;
+        const options = question.querySelectorAll('.optionText');
+        const correctAnswer = question.querySelector('.correctAnswer').value;
+
+        const questionData = {
+            question: questionText,
+            options: [],
+            correctAnswer: parseInt(correctAnswer)
+        };
+
+        options.forEach(function(option) {
+            questionData.options.push(option.value);
+        });
+
+        quizData.questions.push(questionData);
+    });
+
+    db.collection('quizzes').add(quizData).then(function(docRef) {
+        console.log("Quiz created with ID:", docRef.id);
+        alert("Quiz created successfully!");
+        document.getElementById('quizForm').reset(); // Reset the form after submission
+    }).catch(function(error) {
+        console.error("Error adding quiz:", error);
+    });
+});
+
+// Join Quiz Logic
+document.getElementById('joinQuizBtn').addEventListener('click', function() {
+    const quizCode = document.getElementById('quizCode').value;
+
+    // Code to retrieve and validate quiz code
+    db.collection('quizzes').doc(quizCode).get().then(function(doc) {
         if (doc.exists) {
-            const quiz = doc.data();
-            alert('Start playing: ' + quiz.title);
-            // Logic to display questions and allow users to answer
+            console.log("Joining quiz:", doc.data());
+            // Add logic to start the quiz or navigate to the quiz page
+            alert("Joining quiz: " + doc.data().title);
+            // Here, you could redirect the user to a quiz-playing page.
+        } else {
+            console.log("No such quiz!");
+            alert("Quiz not found. Please check the code.");
         }
     }).catch(function(error) {
-        console.error('Error getting quiz:', error);
+        console.log("Error getting document:", error);
+    });
+});
+
+// Fetch Quizzes to Display on Home Page
+function fetchQuizzes() {
+    db.collection("quizzes").get().then((querySnapshot) => {
+        const quizList = document.getElementById('quizList');
+        quizList.innerHTML = ''; // Clear previous quiz list
+        querySnapshot.forEach((doc) => {
+            const quizItem = document.createElement('div');
+            quizItem.textContent = doc.data().title;
+            quizList.appendChild(quizItem);
+        });
     });
 }
+fetchQuizzes();
