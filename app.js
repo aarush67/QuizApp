@@ -8,91 +8,35 @@ var firebaseConfig = {
     appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
 };
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var auth = firebase.auth();
 
-// Google Sign-Up/Sign-In
-document.getElementById('googleSignInBtn').addEventListener('click', function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(function(result) {
-        console.log("User signed in:", result.user);
-        document.getElementById('signOutBtn').style.display = 'block';
-        loadQuizzes();
-    }).catch(function(error) {
-        console.error("Error:", error);
-    });
+// Load quiz when the page is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const quizId = urlParams.get('id');
+
+    if (quizId) {
+        loadQuiz(quizId);
+    } else {
+        document.getElementById('playOptionsContainer').innerHTML = '<p>No quiz selected!</p>';
+    }
 });
 
-// Email Sign-Up
-document.getElementById('emailSignUpBtn').addEventListener('click', function() {
-    var email = prompt("Enter your email:");
-    var password = prompt("Enter your password:");
-
-    auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
-        console.log("User signed up:", userCredential.user);
-        loadQuizzes();
-    }).catch(function(error) {
-        console.error("Error:", error);
-    });
-});
-
-// Email Sign-In
-document.getElementById('emailSignInBtn').addEventListener('click', function() {
-    var email = prompt("Enter your email:");
-    var password = prompt("Enter your password:");
-
-    auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
-        console.log("User signed in:", userCredential.user);
-        document.getElementById('signOutBtn').style.display = 'block';
-        loadQuizzes();
-    }).catch(function(error) {
-        console.error("Error:", error);
-    });
-});
-
-// Sign Out
-document.getElementById('signOutBtn').addEventListener('click', function() {
-    auth.signOut().then(function() {
-        console.log("User signed out");
-        document.getElementById('signOutBtn').style.display = 'none';
-        document.getElementById('quizList').innerHTML = '';
-    });
-});
-
-// Load quizzes from Firestore
-function loadQuizzes() {
-    db.collection('quizzes').get().then(function(querySnapshot) {
-        document.getElementById('quizList').innerHTML = '';
-        querySnapshot.forEach(function(doc) {
-            const quiz = doc.data();
-            const quizItem = `<div class="quiz-item" data-id="${doc.id}">
-                                  <h3>${quiz.title}</h3>
-                                  <button class="playQuizBtn">Play Quiz</button>
-                              </div>`;
-            document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
-        });
-
-        document.querySelectorAll('.playQuizBtn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const quizId = this.parentElement.getAttribute('data-id');
-                // Redirect to the quiz play selection page
-                window.location.href = `playQuiz.html?id=${quizId}`;
-            });
-        });
-    }).catch(function(error) {
-        console.error("Error loading quizzes:", error);
-    });
-}
-
-// Load quiz for playing
+// Load quiz data
 function loadQuiz(quizId) {
     db.collection('quizzes').doc(quizId).get().then(function(doc) {
-        const quizData = doc.data();
-        // Call function to display quiz options
-        displayQuizOptions(quizData);
+        if (doc.exists) {
+            const quizData = doc.data();
+            displayQuizOptions(quizData);
+        } else {
+            document.getElementById('playOptionsContainer').innerHTML = '<p>Quiz not found!</p>';
+        }
     }).catch(function(error) {
         console.error("Error fetching quiz data:", error);
+        document.getElementById('playOptionsContainer').innerHTML = '<p>Error loading quiz data.</p>';
     });
 }
 
@@ -112,7 +56,7 @@ function displayQuizOptions(quizData) {
 
     // Multiplayer mode button event listener
     document.getElementById('playMultiplayerBtn').addEventListener('click', function() {
-        startMultiplayerQuiz(quizData);
+        alert('Multiplayer mode is not yet implemented!');
     });
 }
 
@@ -121,11 +65,6 @@ function startSoloQuiz(quizData) {
     const questionContainer = document.getElementById('questionContainer');
     questionContainer.innerHTML = ''; // Clear previous content
     displayQuestion(quizData.questions[0], 0, quizData);
-}
-
-// Start multiplayer quiz (implement multiplayer logic here)
-function startMultiplayerQuiz(quizData) {
-    alert('Multiplayer mode is not yet implemented!');
 }
 
 // Display question and options for quiz
@@ -149,11 +88,4 @@ function displayQuestion(question, index, quizData) {
         };
         questionContainer.appendChild(optionBtn);
     });
-}
-
-// Check URL for quiz ID and load quiz
-const urlParams = new URLSearchParams(window.location.search);
-const quizId = urlParams.get('id');
-if (quizId) {
-    loadQuiz(quizId);
 }
