@@ -1,11 +1,11 @@
 // Firebase Config (Replace with your Firebase Config from Step 1)
 var firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyB5seWslRsU0fUh5pZRF9_qfEYTtFWp9No",
+    authDomain: "quizapp-1400d.firebaseapp.com",
+    projectId: "quizapp-1400d",
+    storageBucket: "quizapp-1400d.appspot.com",
+    messagingSenderId: "656449627953",
+    appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
   };
   
   // Initialize Firebase
