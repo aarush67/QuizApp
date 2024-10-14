@@ -2,42 +2,57 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f4f4f4;
 }
 
 nav {
-    background-color: #007BFF;
+    background-color: #4CAF50;
     color: white;
-    padding: 10px;
-    text-align: center;
-}
-
-button {
-    margin: 5px;
     padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    background-color: #007BFF;
 }
 
-button:hover {
-    background-color: #0056b3;
-}
-
-#quizList, #quizContainer {
-    margin: 20px;
-}
-
-#quizForm {
-    margin: 20px;
-}
-
-#questionsContainer {
-    margin-top: 10px;
-}
-
-h1 {
+nav h1 {
     margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.button {
+    background-color: #008CBA; /* Blue */
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.button:hover {
+    background-color: #005f73;
+}
+
+#quizList {
+    margin-top: 20px;
+}
+
+.quiz-item {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#playQuizContainer {
+    margin: 20px;
 }
