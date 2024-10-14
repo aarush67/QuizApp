@@ -91,7 +91,21 @@ function fetchQuizzes() {
             quizItem.className = 'quiz-item'; // Add class for styling
             quizList.appendChild(quizItem);
         });
-    }).catch(function(error) {
+    }).catch((error) => {
         console.error("Error fetching quizzes:", error);
     });
 }
+
+// Update UI on Auth State Change
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        console.log("User is signed in:", user);
+        document.getElementById("createQuizNav").style.display = "block";
+        document.getElementById("signOutBtn").style.display = "block";
+        fetchQuizzes();
+    } else {
+        console.log("No user is signed in");
+        document.getElementById("createQuizNav").style.display = "none";
+        document.getElementById("signOutBtn").style.display = "none";
+    }
+});
