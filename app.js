@@ -1,3 +1,4 @@
+// Firebase Configuration
 var firebaseConfig = {
     apiKey: "AIzaSyB5seWslRsU0fUh5pZRF9_qfEYTtFWp9No",
     authDomain: "quizapp-1400d.firebaseapp.com",
@@ -5,7 +6,7 @@ var firebaseConfig = {
     storageBucket: "quizapp-1400d.appspot.com",
     messagingSenderId: "656449627953",
     appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
-  };
+};
 
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
@@ -19,7 +20,7 @@ document.getElementById('googleSignInBtn').addEventListener('click', function() 
         document.getElementById('signOutBtn').style.display = 'block';
         loadQuizzes();
     }).catch(function(error) {
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 });
 
@@ -27,12 +28,12 @@ document.getElementById('googleSignInBtn').addEventListener('click', function() 
 document.getElementById('emailSignUpBtn').addEventListener('click', function() {
     var email = prompt("Enter your email:");
     var password = prompt("Enter your password:");
-    
+
     auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
         console.log("User signed up:", userCredential.user);
         loadQuizzes();
     }).catch(function(error) {
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 });
 
@@ -40,13 +41,13 @@ document.getElementById('emailSignUpBtn').addEventListener('click', function() {
 document.getElementById('emailSignInBtn').addEventListener('click', function() {
     var email = prompt("Enter your email:");
     var password = prompt("Enter your password:");
-    
+
     auth.signInWithEmailAndPassword(email, password).then(function(userCredential) {
         console.log("User signed in:", userCredential.user);
         document.getElementById('signOutBtn').style.display = 'block';
         loadQuizzes();
     }).catch(function(error) {
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 });
 
@@ -78,6 +79,8 @@ function loadQuizzes() {
                 playQuiz(quizId);
             });
         });
+    }).catch(function(error) {
+        console.error("Error loading quizzes:", error);
     });
 }
 
