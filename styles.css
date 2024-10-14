@@ -16,7 +16,14 @@ nav {
     text-align: center;
 }
 
-button {
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+button, .nav-link {
     background-color: #6200ea;
     color: white;
     border: none;
@@ -24,11 +31,17 @@ button {
     cursor: pointer;
     border-radius: 5px;
     font-size: 16px;
-    margin-top: 10px;
+    margin: 5px;
+    transition: background-color 0.3s;
+    text-decoration: none; /* Remove underline from links */
 }
 
-button:hover {
+button:hover, .nav-link:hover {
     background-color: #4e00d1;
+}
+
+.nav-link {
+    display: inline-block; /* Make links behave like buttons */
 }
 
 input[type="text"], input[type="number"] {
