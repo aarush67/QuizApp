@@ -1,14 +1,8 @@
-/* General Reset */
-* {
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,64 +11,62 @@ body {
 nav {
     background-color: #6200ea;
     color: white;
-    width: 100%;
     padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    width: 100%;
+    text-align: center;
 }
 
-h1 {
-    margin: 0;
+button {
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 10px;
 }
 
-.search-container {
-    margin: 2rem 0;
+button:hover {
+    background-color: #4e00d1;
 }
 
-.search-container input, .search-container button {
-    padding: 0.5rem;
-    margin-right: 0.5rem;
+input[type="text"], input[type="number"] {
+    padding: 8px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-.quiz-container {
+form {
     background-color: white;
     padding: 2rem;
+    margin: 2rem;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    width: 80%;
-}
-
-.quiz-container h2 {
-    margin-bottom: 1rem;
-}
-
-#quizList {
-    display: flex;
-    flex-wrap: wrap;
+    width: 300px;
 }
 
 .quiz-item {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    margin: 0.5rem;
+    background-color: white;
     padding: 1rem;
-    width: 200px;
+    margin: 1rem;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
-    border-radius: 8px;
-    transition: background-color 0.3s;
 }
 
-.quiz-item:hover {
-    background-color: #ececec;
-    cursor: pointer;
+.quiz-item h3 {
+    margin-bottom: 10px;
 }
 
-#gameModes {
-    margin: 2rem 0;
+h2 {
+    margin-top: 20px;
 }
 
-#gameModes button, #gameModes input {
-    padding: 0.5rem;
-    margin: 0.5rem;
+#roomCode {
+    padding: 8px;
+    margin: 10px 0;
 }
