@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz App</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav>
         <h1>Quiz App</h1>
-        <!-- Sign-up/Sign-in buttons -->
-        <button id="googleSignInBtn">Sign In with Google</button>
-        <button id="emailSignInBtn">Sign In with Email</button>
-        <button id="emailSignUpBtn">Sign Up with Email</button>
-        <button id="signOutBtn" style="display:none;">Sign Out</button>
+        <div class="nav-buttons">
+            <button id="googleSignInBtn">Sign In with Google</button>
+            <button id="emailSignInBtn">Sign In with Email</button>
+            <button id="emailSignUpBtn">Sign Up with Email</button>
+            <button id="signOutBtn" style="display:none;">Sign Out</button>
+            <a href="createQuiz.html" class="nav-link">Create Quiz</a>
+            <a href="joinQuiz.html" class="nav-link">Join Quiz</a>
+        </div>
     </nav>
     
     <div id="quizListContainer">
