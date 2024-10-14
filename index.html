@@ -3,38 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Website</title>
+    <title>Quiz App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav>
-        <h1>Quiz Website</h1>
-        <div id="user-auth">
-            <button id="googleSignInBtn">Sign in with Google</button>
-            <button id="signOutBtn" style="display:none;">Sign Out</button>
-        </div>
+        <h1>Quiz App</h1>
+        <button id="googleSignInBtn">Sign In with Google</button>
+        <button id="signOutBtn" style="display:none;">Sign Out</button>
     </nav>
-
-    <div class="search-container">
-        <input type="text" id="searchBar" placeholder="Search for quizzes...">
-        <button id="searchBtn">Search</button>
-    </div>
-
-    <div class="quiz-container">
+    
+    <div id="quizListContainer">
         <h2>Available Quizzes</h2>
-        <div id="quizList">
-            <!-- Quizzes will be dynamically loaded here -->
-        </div>
+        <div id="quizList"></div>
     </div>
 
-    <div id="gameModes">
-        <h2>Play Quiz</h2>
-        <button id="soloBtn">Play Solo</button>
-        <button id="multiplayerBtn">Multiplayer</button>
-        <input type="text" id="roomCode" placeholder="Enter room code">
-        <button id="joinRoomBtn">Join Room</button>
-    </div>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
