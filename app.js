@@ -6,7 +6,7 @@ var firebaseConfig = {
     messagingSenderId: "656449627953",
     appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
   };
-  
+
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var auth = firebase.auth();
@@ -16,47 +16,19 @@ document.getElementById('googleSignInBtn').addEventListener('click', function() 
     var provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider).then(function(result) {
         console.log("User signed in:", result.user);
-        showCreateQuizPage();
         document.getElementById('signOutBtn').style.display = 'block';
+        loadQuizzes();
     }).catch(function(error) {
         console.log("Error:", error);
     });
 });
 
+// Sign Out
 document.getElementById('signOutBtn').addEventListener('click', function() {
     auth.signOut().then(function() {
         console.log("User signed out");
         document.getElementById('signOutBtn').style.display = 'none';
-        document.getElementById('createQuizPage').style.display = 'none';
-    });
-});
-
-// Load quizzes
-function loadQuizzes() {
-    db.collection('quizzes').get().then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-            var quiz = doc.data();
-            var quizItem = `<div class="quiz-item" data-id="${doc.id}">
-                                <h3>${quiz.title}</h3>
-                                <p>${quiz.description}</p>
-                            </div>`;
-            document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
-        });
-    });
-}
-loadQuizzes();
-
-// Search quizzes
-document.getElementById('searchBtn').addEventListener('click', function() {
-    var searchTerm = document.getElementById('searchBar').value.toLowerCase();
-    var quizItems = document.querySelectorAll('.quiz-item');
-    quizItems.forEach(function(quizItem) {
-        var title = quizItem.querySelector('h3').textContent.toLowerCase();
-        if (title.includes(searchTerm)) {
-            quizItem.style.display = 'block';
-        } else {
-            quizItem.style.display = 'none';
-        }
+        document.getElementById('quizList').innerHTML = '';
     });
 });
 
@@ -66,7 +38,6 @@ document.getElementById('quizForm').addEventListener('submit', function(e) {
     const quizTitle = document.getElementById('quizTitle').value;
     const questions = [];
     
-    // Get all questions
     document.querySelectorAll('.question').forEach(function(questionElement) {
         const questionText = questionElement.querySelector('.questionText').value;
         const answerOptions = [];
@@ -78,7 +49,6 @@ document.getElementById('quizForm').addEventListener('submit', function(e) {
         questions.push({ questionText, answerOptions, correctAnswer });
     });
 
-    // Save quiz to Firestore
     db.collection('quizzes').add({
         title: quizTitle,
         questions: questions
@@ -101,7 +71,6 @@ function loadQuizzes() {
             document.getElementById('quizList').insertAdjacentHTML('beforeend', quizItem);
         });
 
-        // Add event listeners to "Play Quiz" buttons
         document.querySelectorAll('.playQuizBtn').forEach(function(button) {
             button.addEventListener('click', function() {
                 const quizId = this.parentElement.getAttribute('data-id');
@@ -110,35 +79,16 @@ function loadQuizzes() {
         });
     });
 }
-loadQuizzes();
 
-// Play quiz logic
+// Play quiz
 function playQuiz(quizId) {
     db.collection('quizzes').doc(quizId).get().then(function(doc) {
         if (doc.exists) {
             const quiz = doc.data();
             alert('Start playing: ' + quiz.title);
-            // Add logic to quiz the user on the questions
+            // Logic to display questions and allow users to answer
         }
     }).catch(function(error) {
         console.error('Error getting quiz:', error);
     });
 }
-
-// Handle game modes
-document.getElementById('soloBtn').addEventListener('click', function() {
-    console.log("Playing solo...");
-    // Add logic to play the quiz solo
-});
-
-document.getElementById('multiplayerBtn').addEventListener('click', function() {
-    var roomCode = prompt("Create a room code:");
-    console.log("Room created with code:", roomCode);
-    // Add logic to start multiplayer session
-});
-
-document.getElementById('joinRoomBtn').addEventListener('click', function() {
-    var roomCode = document.getElementById('roomCode').value;
-    console.log("Joining room with code:", roomCode);
-    // Add logic to join an existing multiplayer room
-});
