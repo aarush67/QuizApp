@@ -1,42 +1,34 @@
-// Firebase Configuration (same as before)
-const firebaseConfig = {
-    apiKey: "AIzaSyB5seWslRsU0fUh5pZRF9_qfEYTtFWp9No",
-    authDomain: "quizapp-1400d.firebaseapp.com",
-    projectId: "quizapp-1400d",
-    storageBucket: "quizapp-1400d.appspot.com",
-    messagingSenderId: "656449627953",
-    appId: "1:656449627953:web:db32a3c03c8c76dfa13210"
-};
-
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// Save Quiz to Firestore
-document.getElementById("saveQuizBtn").onclick = function() {
-    const quizTitle = document.getElementById("quizTitle").value;
-    if (quizTitle) {
-        db.collection("quizzes").add({
-            title: quizTitle
-        }).then(() => {
-            document.getElementById("feedback").innerText = "Quiz saved successfully!";
-            document.getElementById("quizTitle").value = ''; // Clear input
-        }).catch((error) => {
-            console.error("Error saving quiz:", error);
-            document.getElementById("feedback").innerText = "Error saving quiz.";
-        });
-    } else {
-        alert("Please enter a quiz title.");
-    }
-};
-
-// Sign Out
-document.getElementById("signOutBtn").onclick = function() {
-    firebase.auth().signOut().then(() => {
-        console.log("User signed out");
-        location.href = 'index.html'; // Redirect to home page
-    }).catch((error) => {
-        console.error("Error signing out:", error);
+document.getElementById('addQuestionBtn').addEventListener('click', function() {
+    const questionsContainer = document.getElementById('questionsContainer');
+    const questionDiv = document.createElement('div');
+    questionDiv.innerHTML = `
+        <label>Question:</label>
+        <input type="text" placeholder="Enter question" required>
+        <label>Answer:</label>
+        <input type="text" placeholder="Enter answer" required>
+        <button class="removeQuestionBtn">Remove Question</button>
+    `;
+    questionsContainer.appendChild(questionDiv);
+    
+    questionDiv.querySelector('.removeQuestionBtn').addEventListener('click', function() {
+        questionsContainer.removeChild(questionDiv);
     });
-};
+});
 
+document.getElementById('saveQuizBtn').addEventListener('click', function() {
+    const title = document.getElementById('quizTitle').value;
+    const questions = Array.from(document.getElementById('questionsContainer').children).map(q => ({
+        question: q.querySelector('input[type="text"]').value,
+        answer: q.querySelectorAll('input[type="text"]')[1].value,
+    }));
+
+    db.collection('quizzes').add({
+        title: title,
+        questions: questions
+    }).then(function() {
+        alert('Quiz saved successfully!');
+        window.location.href = 'index.html';
+    }).catch(function(error) {
+        console.error('Error saving quiz:', error);
+    });
+});
