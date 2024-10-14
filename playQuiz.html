@@ -1,1 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="playQuiz.js" defer></script>
+</head>
+<body>
+    <nav>
+        <button id="signOutBtn">Sign Out</button>
+        <h1 id="quizTitle"></h1>
+    </nav>
+    
+    <div id="quizContainer">
+        <div id="questionContainer"></div>
+        <button id="nextQuestionBtn">Next Question</button>
+    </div>
+
+    <script>
+        document.getElementById('signOutBtn').addEventListener('click', function() {
+            firebase.auth().signOut().then(function() {
+                window.location.href = 'index.html'; // Redirect to the home page after signing out
+            });
+        });
+    </script>
+</body>
+</html>
 
