@@ -60,7 +60,7 @@ document.getElementById('signOutBtn').addEventListener('click', function() {
     });
 });
 
-// Load quizzes
+// Load quizzes from Firestore
 function loadQuizzes() {
     db.collection('quizzes').get().then(function(querySnapshot) {
         document.getElementById('quizList').innerHTML = '';
@@ -76,7 +76,7 @@ function loadQuizzes() {
         document.querySelectorAll('.playQuizBtn').forEach(function(button) {
             button.addEventListener('click', function() {
                 const quizId = this.parentElement.getAttribute('data-id');
-                window.location.href = `quizPlay.html?id=${quizId}`;
+                window.location.href = `playQuiz.html?id=${quizId}`; // Redirect to playQuiz page
             });
         });
     }).catch(function(error) {
@@ -84,65 +84,44 @@ function loadQuizzes() {
     });
 }
 
-// Solo or Multiplayer Mode
-document.getElementById('soloModeBtn').addEventListener('click', function() {
-    const quizId = new URLSearchParams(window.location.search).get('id');
-    startSoloQuiz(quizId);
-});
-
-document.getElementById('multiPlayerModeBtn').addEventListener('click', function() {
-    // Implement multiplayer logic, e.g., generate a code and allow joining
-    alert("Multiplayer mode not implemented yet.");
-});
-
-// Start Solo Quiz
-function startSoloQuiz(quizId) {
+// Load quiz for playing
+function loadQuiz(quizId) {
     db.collection('quizzes').doc(quizId).get().then(function(doc) {
         const quizData = doc.data();
+        // Display the first question
         displayQuestion(quizData);
     }).catch(function(error) {
         console.error("Error fetching quiz data:", error);
     });
 }
 
-// Display questions for solo mode
+// Display question and options for quiz
 function displayQuestion(quizData) {
-    let currentQuestionIndex = 0;
-    let score = 0;
+    const questionContainer = document.getElementById('questionContainer');
+    questionContainer.innerHTML = ''; // Clear previous questions
 
-    function showQuestion() {
-        if (currentQuestionIndex < quizData.questions.length) {
-            const question = quizData.questions[currentQuestionIndex];
-            const questionContainer = document.getElementById('questionContainer');
-            questionContainer.innerHTML = `
-                <h2>${question.question}</h2>
-                <input type="text" id="answerInput" placeholder="Your answer">
-                <button id="submitAnswerBtn">Submit Answer</button>
-                <div id="feedback"></div>
-            `;
-
-            document.getElementById('submitAnswerBtn').addEventListener('click', function() {
-                const userAnswer = document.getElementById('answerInput').value.trim();
-                if (userAnswer.toLowerCase() === question.answer.toLowerCase()) {
-                    score++;
-                    document.getElementById('feedback').textContent = "Correct!";
-                } else {
-                    document.getElementById('feedback').textContent = `Incorrect! The correct answer is: ${question.answer}`;
-                }
-
-                currentQuestionIndex++;
-                setTimeout(showQuestion, 2000); // Show next question after 2 seconds
-            });
-        } else {
-            document.getElementById('questionContainer').innerHTML = `
-                <h2>Quiz completed!</h2>
-                <h3>Your score: ${score}/${quizData.questions.length}</h3>
-            `;
-        }
-    }
-
-    showQuestion();
+    quizData.questions.forEach((question, index) => {
+        const questionItem = document.createElement('div');
+        questionItem.innerHTML = `<h3>${question.text}</h3>`;
+        
+        question.options.forEach((option) => {
+            const optionBtn = document.createElement('button');
+            optionBtn.className = 'answer-button';
+            optionBtn.innerText = option.text;
+            optionBtn.onclick = () => {
+                // Logic for checking the answer goes here
+                alert('You selected: ' + option.text);
+                // Add functionality to go to the next question or finish quiz
+            };
+            questionItem.appendChild(optionBtn);
+        });
+        questionContainer.appendChild(questionItem);
+    });
 }
 
-// Load the quizzes on page load
-window.onload = loadQuizzes;
+// Check URL for quiz ID and load quiz
+const urlParams = new URLSearchParams(window.location.search);
+const quizId = urlParams.get('id');
+if (quizId) {
+    loadQuiz(quizId);
+}
