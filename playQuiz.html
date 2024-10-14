@@ -3,26 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play Quiz</title>
     <link rel="stylesheet" href="styles.css">
+    <title>Play Quiz</title>
 </head>
 <body>
     <nav>
-        <h1>Play Quiz</h1>
+        <h1>Quiz App</h1>
         <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="createQuiz.html">Create Quiz</a></li>
             <li><a href="joinQuiz.html">Join Quiz</a></li>
         </ul>
     </nav>
+    
+    <div id="playOptionsContainer"></div>
+    <div id="questionContainer"></div>
 
-    <div id="playQuizContainer">
-        <button id="soloModeBtn" class="button">Play Solo</button>
-        <button id="multiPlayerModeBtn" class="button">Play Multiplayer</button>
-    </div>
-
-    <div id="questionContainer"></div> <!-- For displaying quiz questions -->
-
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
