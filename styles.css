@@ -16,14 +16,50 @@ nav {
     text-align: center;
 }
 
-.nav-buttons {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 10px;
+nav h1 {
+    margin: 0;
 }
 
-button, .nav-link {
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+#createQuizContainer, #joinQuizContainer {
+    background-color: white;
+    padding: 2rem;
+    margin: 2rem;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+input[type="text"], input[type="number"] {
+    padding: 10px;
+    margin: 5px 0;
+    width: calc(100% - 22px); /* Full width with padding */
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
     background-color: #6200ea;
     color: white;
     border: none;
@@ -31,55 +67,10 @@ button, .nav-link {
     cursor: pointer;
     border-radius: 5px;
     font-size: 16px;
-    margin: 5px;
+    margin-top: 10px;
     transition: background-color 0.3s;
-    text-decoration: none; /* Remove underline from links */
 }
 
-button:hover, .nav-link:hover {
+button:hover {
     background-color: #4e00d1;
-}
-
-.nav-link {
-    display: inline-block; /* Make links behave like buttons */
-}
-
-input[type="text"], input[type="number"] {
-    padding: 8px;
-    margin: 5px 0;
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-form {
-    background-color: white;
-    padding: 2rem;
-    margin: 2rem;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-}
-
-.quiz-item {
-    background-color: white;
-    padding: 1rem;
-    margin: 1rem;
-    border-radius: 5px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.quiz-item h3 {
-    margin-bottom: 10px;
-}
-
-h2 {
-    margin-top: 20px;
-}
-
-#roomCode {
-    padding: 8px;
-    margin: 10px 0;
 }
