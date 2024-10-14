@@ -9,7 +9,10 @@
 <body>
     <nav>
         <h1>Quiz App</h1>
+        <!-- Sign-up/Sign-in buttons -->
         <button id="googleSignInBtn">Sign In with Google</button>
+        <button id="emailSignInBtn">Sign In with Email</button>
+        <button id="emailSignUpBtn">Sign Up with Email</button>
         <button id="signOutBtn" style="display:none;">Sign Out</button>
     </nav>
     
@@ -18,6 +21,7 @@
         <div id="quizList"></div>
     </div>
 
+    <!-- Firebase JS SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
